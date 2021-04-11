@@ -1,6 +1,6 @@
 #include <concepts>
 
-// Apply is of kind (* -> *) -> * -> *
+// Apply: (* -> *) -> * -> *
 template<template<typename> typename TypeConstructor, typename TypeArgument>
 using Apply = TypeConstructor<TypeArgument>;
 
