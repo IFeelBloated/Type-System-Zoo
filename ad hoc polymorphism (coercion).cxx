@@ -3,14 +3,14 @@
 using namespace std::literals;
 
 struct A {
-    // coercion A >-> string
+    // coercion: A >-> string
     operator auto() {
         return "A"s;
     }
 };
 
 struct B {
-    // coercion B >-> string
+    // coercion: B >-> string
     operator auto() {
         return "B"s;
     }
