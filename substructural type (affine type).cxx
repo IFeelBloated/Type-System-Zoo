@@ -5,18 +5,16 @@ struct ADLType {
 
 template<auto InstanceIdentifier, auto x>
 struct InjectDefinitionForADLFunc {
-    friend consteval auto ADLFunc(ADLType<InstanceIdentifier, x>, auto...) { return 42; }
+    friend consteval auto ADLFunc(ADLType<InstanceIdentifier, x>, auto...) {}
 };
 
-template<auto InstanceIdentifier, auto x = 0>
-constexpr auto ExtractThenUpdateCurrentState(auto...)->decltype(x) {
-    InjectDefinitionForADLFunc<InstanceIdentifier, x>{};
+template<auto InstanceIdentifier, auto x = 0, auto = []{}>
+constexpr auto ExtractThenUpdateCurrentState()->decltype(x) {
+    if constexpr (requires { ADLFunc(ADLType<InstanceIdentifier, x>{}); })
+        return ExtractThenUpdateCurrentState<InstanceIdentifier, x + 1>();
+    else 
+        InjectDefinitionForADLFunc<InstanceIdentifier, x>{};
     return x;
-}
-
-template<auto InstanceIdentifier, auto x = 0, auto = ADLFunc(ADLType<InstanceIdentifier, x>{})>
-constexpr auto ExtractThenUpdateCurrentState() {
-    return ExtractThenUpdateCurrentState<InstanceIdentifier, x + 1>();
 }
 
 template<auto InstanceIdentifier = []{}>
