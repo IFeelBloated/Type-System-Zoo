@@ -20,7 +20,7 @@ consteval auto ExtractThenUpdateCurrentState()->decltype(x) {
 template<auto InstanceIdentifier = []{}>
 struct AffineType {};
 
-template<auto InstanceIdentifier = []{}, auto x = ExtractThenUpdateCurrentState<InstanceIdentifier>()>
+template<auto InstanceIdentifier, auto x = ExtractThenUpdateCurrentState<InstanceIdentifier>()>
 auto Use(AffineType<InstanceIdentifier>) requires (x == 0) {}
 
 auto main()->int {
