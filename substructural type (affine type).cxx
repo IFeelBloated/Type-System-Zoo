@@ -9,7 +9,7 @@ struct InjectDefinitionForADLFunc {
 };
 
 template<auto InstanceIdentifier, auto x = 0, auto = []{}>
-constexpr auto ExtractThenUpdateCurrentState()->decltype(x) {
+consteval auto ExtractThenUpdateCurrentState()->decltype(x) {
     if constexpr (requires { ADLFunc(ADLType<InstanceIdentifier, x>{}); })
         return ExtractThenUpdateCurrentState<InstanceIdentifier, x + 1>();
     else 
@@ -18,15 +18,17 @@ constexpr auto ExtractThenUpdateCurrentState()->decltype(x) {
 }
 
 template<auto InstanceIdentifier = []{}>
-struct AffineType {
-    template<auto x = ExtractThenUpdateCurrentState<InstanceIdentifier>()>
-    auto Use() requires (x == 0) {}
-};
+struct AffineType {};
+
+template<auto InstanceIdentifier = []{}, auto x = ExtractThenUpdateCurrentState<InstanceIdentifier>()>
+auto Use(AffineType<InstanceIdentifier>) requires (x == 0) {}
 
 auto main()->int {
     auto x = AffineType{};
     auto y = AffineType{};
-    x.Use();
-    y.Use();
-    // x.Use(); <- type level failure
+
+    Use(x);
+    Use(y);
+
+    // Use(x); <- type level failure
 }
